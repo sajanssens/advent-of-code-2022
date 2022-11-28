@@ -1,4 +1,4 @@
-package nl.bramjanssens.dec1
+package nl.bramjanssens.day1
 
 import nl.bramjanssens.InputType.Main
 import nl.bramjanssens.InputType.Test
