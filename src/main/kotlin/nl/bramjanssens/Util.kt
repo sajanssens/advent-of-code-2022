@@ -1,11 +1,17 @@
 package nl.bramjanssens
 
-enum class InputType private constructor(val filename: String) {
+import java.io.InputStream
+
+enum class InputType(val filename: String) {
     Test("test"), Main("main")
 }
 
 fun lines(day: Int, type: InputType) =
-    {}.javaClass.getResourceAsStream("/day$day/${type.filename}.txt")?.bufferedReader()?.readLines() ?: listOf("no input...")
+    inputStream(day, type)?.bufferedReader()?.readLines() ?: listOf("no input...")
 
+fun text(day: Int, type: InputType) =
+    inputStream(day, type)?.bufferedReader()?.readText() ?: "no input..."
+
+private fun inputStream(day: Int, type: InputType): InputStream? = {}.javaClass.getResourceAsStream("/day$day/${type.filename}.txt")
 
 
