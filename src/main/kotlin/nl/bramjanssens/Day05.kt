@@ -4,9 +4,8 @@ import nl.bramjanssens.InputType.Main
 import java.util.*
 
 fun main() {
-    // part 1
     val numberOfStacks = 9 // n
-    val highestStack = 8 // h
+    val highestStack = 8
 
     // create n stacks
     val stacks = List(numberOfStacks) { Stack<String>() }
@@ -29,21 +28,27 @@ fun main() {
         .map { filterWords(it) }
         .forEach {
             val (qty, from, to) = step(it)
-            repeat(qty) {
-                stacks[to].push(stacks[from].pop())
+            // part 1
+            // repeat(qty) {
+            //     stacks[to].push(stacks[from].pop())
+            // }
+
+            // part 2
+            Stack<String>().apply {
+                repeat(qty) { add(stacks[from].pop()) } // pick up `qty` crates from stack[from]
+                repeat(qty) { stacks[to].push(pop()) }  // put down `qty` crates on stack[to]
             }
         }
 
-
     println(stacks.joinToString("") { it.peek() })
 }
+
+private fun crate(it: String, n: Int) = it.substring(4 * n + 1, 4 * n + 2)
+
+private fun filterWords(it: String) = it.replace("move ", "").replace(" from ", "|").replace(" to ", "|")
 
 private fun step(it: String): Triple<Int, Int, Int> {
     val step = it.split("|").map { it.toInt() }
     return Triple(step[0], step[1] - 1, step[2] - 1)
 }
-
-private fun filterWords(it: String) = it.replace("move ", "").replace(" from ", "|").replace(" to ", "|")
-
-private fun crate(it: String, n: Int) = it.substring(4 * n + 1, 4 * n + 2)
 
