@@ -1,14 +1,7 @@
 package nl.bramjanssens
 
 import nl.bramjanssens.InputType.Main
-import nl.bramjanssens.InputType.Test
 import kotlin.math.absoluteValue
-
-private val String.horizontal: Boolean
-    get() = this == "L" || this == "R"
-
-private val String.vertical: Boolean
-    get() = this == "U" || this == "D"
 
 fun main() {
     val head = Knot(0, 0)
@@ -24,9 +17,7 @@ fun main() {
         }
     }
 
-    println(tailMoves)
     println(tailMoves.count())
-
 }
 
 data class Knot(var x: Int, var y: Int) {
@@ -49,16 +40,21 @@ data class Knot(var x: Int, var y: Int) {
         return Point(x, y)
     }
 
-    private fun diagonalTo(other: Knot) =
-        (y - other.y).absoluteValue == 1 && (x - other.x).absoluteValue == 1
+    private fun adjacentTo(other: Knot) = (y - other.y).absoluteValue <= 1 && (x - other.x).absoluteValue <= 1
+
+    private fun diagonalTo(other: Knot) = (y - other.y).absoluteValue == 1 && (x - other.x).absoluteValue == 1
 
     private fun correctDiagonal(dir: String, head: Knot) {
         if (dir.horizontal) y = head.y
         if (dir.vertical) x = head.x
     }
 
-    private fun adjacentTo(other: Knot) = (y - other.y).absoluteValue <= 1 && (x - other.x).absoluteValue <= 1
-
 }
 
 data class Point(val x: Int, val y: Int)
+
+private val String.horizontal
+    get() = this == "L" || this == "R"
+
+private val String.vertical
+    get() = this == "U" || this == "D"
