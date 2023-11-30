@@ -5,21 +5,24 @@ import nl.bramjanssens.InputType.Test
 import kotlin.math.absoluteValue
 
 fun main() {
-    // part1()
-    part2()
+    part1()
+    // part2()
 }
 
 private fun part1() {
     val head = Knot(0, 0)
     val tail = Knot(0, 0)
     val tailMoves = mutableSetOf<Point>()
+    tailMoves.add(tail.toPoint())
 
     for (line in lines(9, Main)) {
         val (dir, steps) = line.split(" ")
         repeat(steps.toInt()) {
             head.move(dir)
-            val tailMove = tail.move(dir, head)
-            tailMoves.add(tailMove)
+            if (!tail.adjacentTo(head)) {
+                tail.moveTowards(head)
+                tailMoves.add(tail.toPoint())
+            }
         }
     }
 
@@ -67,10 +70,58 @@ data class Knot(var x: Int, var y: Int) {
                 correctDiagonal(dir, head)
             }
         }
-        return Point(x, y)
+        return toPoint()
     }
 
-    private fun adjacentTo(other: Knot) = (y - other.y).absoluteValue <= 1 && (x - other.x).absoluteValue <= 1
+    fun moveTowards(other: Knot) {
+        val orientation = other.orientationTowards(this)
+
+        if (orientation == "R") {
+            this.x++
+        } else if (orientation == "L") {
+            this.x--
+        } else if (orientation == "U") {
+            this.y++
+        } else if (orientation == "D") {
+            this.y--
+        } else if (orientation == "NE") {
+            this.x++
+            this.y++
+        } else if (orientation == "NW") {
+            this.x--
+            this.y++
+        } else if (orientation == "SE") {
+            this.x++
+            this.y--
+        } else if (orientation == "SW") {
+            this.x--
+            this.y--
+        }
+    }
+
+    fun toPoint() = Point(x, y)
+
+    internal fun orientationTowards(other: Knot): String {
+        if (x == other.x && y == other.y) return "SAME"
+
+        if (y == other.y && x > other.x) return "R"
+        if (y == other.y && x < other.x) return "L"
+        if (x == other.x && y > other.y) return "U"
+        if (x == other.x && y < other.y) return "D"
+
+        if (x > other.x && y > other.y) return "NE"
+        if (x < other.x && y > other.y) return "NW"
+        if (x < other.x && y < other.y) return "SW"
+        if (x > other.x && y < other.y) return "SE"
+
+        return "?"
+    }
+
+    internal fun isRightFrom(other: Knot): Boolean {
+        return y == other.y && x > other.x
+    }
+
+    fun adjacentTo(other: Knot) = (y - other.y).absoluteValue <= 1 && (x - other.x).absoluteValue <= 1
 
     private fun diagonalTo(other: Knot) = (y - other.y).absoluteValue >= 1 && (x - other.x).absoluteValue >= 1
 
