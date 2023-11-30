@@ -15,21 +15,21 @@ private fun part1and2() {
     for (line in lines(10, Main)) {
         if (line == "noop") {
             cycle++
-            log(log, cycle, x)
+            record(log, cycle, x)
             draw(cycle - 1, x, crt) // part 2
         } else {
             val (_, num) = line.split(" ")
             // start cycle 1
             cycle++
             // during cycle 1
-            log(log, cycle, x)
+            record(log, cycle, x)
             draw(cycle - 1, x, crt) // part 2
             // after cycle 1
 
             // start cycle 2
             cycle++
             // during cycle 2
-            log(log, cycle, x)
+            record(log, cycle, x)
             draw(cycle - 1, x, crt) // part 2
             x += num.toInt()
             // after cycle 2
@@ -53,7 +53,7 @@ private fun part1and2() {
     }
 }
 
-private fun log(log: MutableList<Record>, cycle: Int, x: Int) {
+private fun record(log: MutableList<Record>, cycle: Int, x: Int) {
     log.add(Record(cycle, x))
 }
 
