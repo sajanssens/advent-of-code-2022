@@ -1,19 +1,17 @@
 package nl.bramjanssens
 
 import nl.bramjanssens.InputType.Main
-import nl.bramjanssens.InputType.Test
 import kotlin.math.absoluteValue
 
 fun main() {
     part1()
-    // part2()
+    part2()
 }
 
 private fun part1() {
     val head = Knot(0, 0)
     val tail = Knot(0, 0)
     val tailMoves = mutableSetOf<Point>()
-    tailMoves.add(tail.toPoint())
 
     for (line in lines(9, Main)) {
         val (dir, steps) = line.split(" ")
@@ -21,8 +19,8 @@ private fun part1() {
             head.move(dir)
             if (!tail.adjacentTo(head)) {
                 tail.moveTowards(head)
-                tailMoves.add(tail.toPoint())
             }
+            tailMoves.add(tail.toPoint())
         }
     }
 
@@ -31,22 +29,22 @@ private fun part1() {
 
 private fun part2() {
     val knots = List(10) { Knot(0, 0) }
-    val head = knots.first()
-    val tail = knots.last()
     val tailMoves = mutableSetOf<Point>()
 
-    for (line in lines(9, Test)) {
+    for (line in lines(9, Main)) {
         val (dir, steps) = line.split(" ")
+        val head = knots.first()
 
         repeat(steps.toInt()) {
             head.move(dir)
 
-            for ((k1, k2) in knots.zipWithNext()) {
-                val move = k2.move(dir, k1)
-                if (k2 === tail) {
-                    tailMoves.add(move)
+            for ((h, t) in knots.zipWithNext()) {
+                if (!t.adjacentTo(h)) {
+                    t.moveTowards(h)
                 }
             }
+
+            tailMoves.add(knots.last().toPoint())
         }
     }
 
@@ -73,7 +71,7 @@ data class Knot(var x: Int, var y: Int) {
         return toPoint()
     }
 
-    fun moveTowards(other: Knot) {
+    fun moveTowards(other: Knot): Point {
         val orientation = other.orientationTowards(this)
 
         if (orientation == "R") {
@@ -97,6 +95,8 @@ data class Knot(var x: Int, var y: Int) {
             this.x--
             this.y--
         }
+
+        return toPoint()
     }
 
     fun toPoint() = Point(x, y)
